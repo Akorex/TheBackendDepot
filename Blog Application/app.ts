@@ -1,5 +1,6 @@
 import express, {Application, Request, Response} from 'express'
 import {config} from './config/config'
+import connectDB from './config/db'
 
 
 
