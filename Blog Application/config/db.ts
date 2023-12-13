@@ -1,10 +1,11 @@
 import mongoose from 'mongoose'
+import logger from '../logger'
 
 const connectDB = (url: any) => {
     return mongoose
     .connect(url)
-    .then(() => console.log(`Connected to the database successfully.`))
-    .catch((err) => console.log(`An error occured: ${err}`))
+    .then(() => logger.info(`Connected to the database successfully.`))
+    .catch((err) => logger.error(`An error occured: ${err}`))
 }
 
 export default connectDB
