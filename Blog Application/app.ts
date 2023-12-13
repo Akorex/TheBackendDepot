@@ -1,6 +1,8 @@
 import express, {Application, Request, Response} from 'express'
 import {config} from './config/config'
 import connectDB from './config/db'
+import logger from './logger'
+import notFoundMiddleWare from './middlewares/not-found'
 
 
 
@@ -16,17 +18,19 @@ app.get('/', (req: Request, res: Response) => {
 
 // middlewares
 
-
+app.use(notFoundMiddleWare)
+app.use(express.json())
 
 // start
-const start = () => {
+const start = async () => {
     try{
+        await connectDB(process.env.MONGO_URI)
         app.listen(port, () => {
             console.log(`Server started at http://localhost:${port}. 
                     Press Ctrl-C to cancel.`)
         })
-    }catch(e){
-        console.log(e)
+    }catch(err){
+        logger.error(err)
     }
     
 }

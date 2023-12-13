@@ -24,12 +24,6 @@ const userSchema = new mongoose.Schema({
         minlength: [8, 'your password should be longer than six characters']
     }, 
 
-    confirmPassword: {
-        type: String,
-        required: [true, 'please confirm your password'],
-        minlength: [8, 'your password should be longer than six characters'],
-    },
-
     phoneNumber: {
         type: String,
         required: false
