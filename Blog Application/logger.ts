@@ -1,4 +1,4 @@
-import { createLogger, format, transports } from "winston";
+import { createLogger, format, transports, addColors} from "winston";
 
 const {combine, timestamp, colorize, printf} = format
 const logFormat = printf(( {timestamp, level, message}) => `${timestamp} ${level}: ${message}`)
@@ -16,6 +16,13 @@ const logger = createLogger({
         new transports.File({filename: 'logs/combined.log'}),
         new transports.Console({format: combine(logFormat, colorize({all: true}))})
     ]
+})
+
+addColors({
+    error: "bold red",
+    warn: "bold yellow",
+    info: "bold cyan",
+    debug: "bold green"
 })
 
 export default logger
