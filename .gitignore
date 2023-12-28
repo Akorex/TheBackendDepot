@@ -1,3 +1,4 @@
 .env
 .credentials.*
-Blog Application/node_modules
+CollabFlow/node_modules
+CollabFlow/log
