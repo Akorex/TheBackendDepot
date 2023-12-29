@@ -1,3 +1,5 @@
+import {hashSync, genSaltSync, compareSync} from 'bcryptjs'
+
 interface ISchemaDefault{
     type:
     | StringConstructor
@@ -7,6 +9,12 @@ interface ISchemaDefault{
     | StringConstructor[]
 
     default: null | string | number | Date | boolean
+}
+
+
+export const generateHashedValue = (value: string) => {
+    const salt = genSaltSync(10)
+    return hashSync(value, salt)
 }
 
 

@@ -19,7 +19,7 @@ app.get('/', (req: Request, res: Response) => {
     res.send(`<h1> Welcome to CollabFlow </h1>`)
 })
 
-app.use(`api/v${config.apiVersion}`, router)
+app.use(`/api/v${config.apiVersion}`, router)
 
 const start = async () =>{
     try {

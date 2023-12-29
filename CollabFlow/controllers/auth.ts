@@ -1,8 +1,45 @@
 import User from "../models/auth";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
+import logger from "../utils/logger";
+import { StatusCodes } from "http-status-codes";
+import {generateHashedValue} from '../utils/auth'
 
-export const registerUser = async (req: Request, res: Response) => {
+export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
+
+    try{
+        logger.info(`START: Register User Service`)
+        const {email, 
+            password, 
+            firstName, 
+            lastName,
+            companyName,
+            dateOfBirth} = req.body
+
+        const existingUser = await User.findOne({email})
+        if (existingUser){
+            res.status(StatusCodes.BAD_REQUEST).json({message: 'User already exists. Log in instead.'})
+        }
+
+        const newUser = await User.create({
+            firstName,
+            lastName,
+            email,
+            password: generateHashedValue(password),
+            ...(companyName ? { companyName } : {}),
+            ...(dateOfBirth ? {dateOfBirth}: {})
+        })
+
+        res.status(StatusCodes.CREATED).json({user: 
+            {firstName: newUser.firstName, lastName: newUser.lastName, email: newUser.email}
+        })
+
+        logger.info(`END: Register User Service`)
+
+    }catch(error){
+        next(error)
+    }
+    
 
 }
 
