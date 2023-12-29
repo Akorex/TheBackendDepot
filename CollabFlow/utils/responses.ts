@@ -1,0 +1,8 @@
+import { Request, Response, NextFunction } from "express";
+
+export const errorResponse = (
+    res: Response,
+    statusCode: number,
+    error: string): void => {
+        res.status(statusCode).send({status: 'error', error})
+    }

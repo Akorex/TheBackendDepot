@@ -3,7 +3,7 @@ import { config } from './config/config'
 import connectDB from './config/db'
 import logger from './utils/logger'
 import router from './routes'
-
+import errorHandler from './middlewares/errorHandler'
 
 // setup
 const app: Application = express()
@@ -12,6 +12,7 @@ const uri = config.uri
 
 // middlewares
 app.use(express.json())
+app.use(errorHandler)
 
 
 // routes
