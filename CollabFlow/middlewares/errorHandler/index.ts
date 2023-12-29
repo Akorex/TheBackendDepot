@@ -1,13 +1,13 @@
 import ApiError from "./api-error";
 import logger from "../../utils/logger";
 import {JsonWebTokenError} from 'jsonwebtoken'
-import { ErrorRequestHandler, Request, Response, NextFunction } from "express";
+import { ErrorRequestHandler, NextFunction, Request, Response} from "express";
 import { errorResponse } from "../../utils/responses";
 
 const errorHandler = (
     error: ErrorRequestHandler, 
     req: Request, 
-    res: Response,
+    res: Response, 
     next: NextFunction): void => {
         let message = "Oops. Something went wrong. Please try again later."
         let errCode = 500
