@@ -11,18 +11,19 @@ const app: Application = express()
 const port = config.port
 const uri = config.uri
 
-// middlewares
+
 app.use(express.json())
+
+app.get('/', (req: Request, res: Response) => {
+    res.send(`<h1> Welcome to CollabFlow </h1>`)
+})
+app.use(`/api/v${config.apiVersion}`, router)
+
+
 app.use(notFound)
 app.use(errorHandler)
 
 
-// routes
-app.get('/', (req: Request, res: Response) => {
-    res.send(`<h1> Welcome to CollabFlow </h1>`)
-})
-
-app.use(`/api/v${config.apiVersion}`, router)
 
 const start = async () =>{
     try {

@@ -3,7 +3,8 @@ import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import logger from "../utils/logger";
 import { StatusCodes } from "http-status-codes";
-import {generateHashedValue} from '../utils/auth'
+import {generateHashedValue, checkValidity} from '../utils/auth'
+import ApiError from "../middlewares/errorHandler/api-error";
 
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -43,8 +44,31 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
 
 }
 
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        logger.info(`START: Login User Service`)
+        const {email, password} = req.body
 
+        if (!email || !password) {
+            return next(ApiError.badRequest('Please provide your email and password.'))
+        }
+
+        const user = await User.findOne({email})
+
+        if (!user){
+            return next(ApiError.badRequest('This user does not exist.'))
+        }
+
+        if (!checkValidity(password, user.password)){
+            return next(ApiError.badRequest("The email/password provided is not correct."))
+        }
+
+        logger.info(`END: Login User Service`)
+        res.status(StatusCodes.OK).json({user: {name: `${user.firstName} ${user.lastName}`}})
+
+    }catch(error){
+        next(error)
+    }
 }
 
 export const forgotPassword = async (req: Request, res: Response) => {

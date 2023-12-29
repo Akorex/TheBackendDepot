@@ -17,6 +17,10 @@ export const generateHashedValue = (value: string) => {
     return hashSync(value, salt)
 }
 
+export const checkValidity = (value: string, otherValue: string) => {
+    return compareSync(value, otherValue)
+}
+
 
 
 export const getTypeAndDefaultValue = (type:

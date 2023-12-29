@@ -3,19 +3,14 @@ import Joi from "joi";
 import ApiError from "./errorHandler/api-error";
 
 
-const joiHelper = (req: Request, res: Response, next: NextFunction) => {
-    const {error}
-}
-
 const joiMiddleware = (
   schema: Joi.Schema,
   property?: "body" | "query" | "params"
 ): ((req: Request, res: Response, next: NextFunction) => void) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    // 
-    const { error } = schema.validate(req[property || "body"], {allowUnknown: true);
 
-    //return error if the error object contains details
+  return (req: Request, res: Response, next: NextFunction) => {
+    const { error } = schema.validate(req[property || "body"], {allowUnknown: true});
+    
     if (error !== null && error?.details) {
       const { details }: Joi.ValidationError = error;
       const message = details
