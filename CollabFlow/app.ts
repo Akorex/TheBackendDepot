@@ -2,6 +2,7 @@ import express, {Application, Request, Response} from 'express'
 import { config } from './config/config'
 import connectDB from './config/db'
 import logger from './utils/logger'
+import router from './routes'
 
 
 // setup
@@ -17,6 +18,8 @@ app.use(express.json())
 app.get('/', (req: Request, res: Response) => {
     res.send(`<h1> Welcome to CollabFlow </h1>`)
 })
+
+app.use(`api/v${config.apiVersion}`, router)
 
 const start = async () =>{
     try {
