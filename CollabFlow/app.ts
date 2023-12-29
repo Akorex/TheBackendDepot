@@ -4,6 +4,7 @@ import connectDB from './config/db'
 import logger from './utils/logger'
 import router from './routes'
 import errorHandler from './middlewares/errorHandler'
+import notFound from './middlewares/notFound'
 
 // setup
 const app: Application = express()
@@ -12,6 +13,7 @@ const uri = config.uri
 
 // middlewares
 app.use(express.json())
+app.use(notFound)
 app.use(errorHandler)
 
 
