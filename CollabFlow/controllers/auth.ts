@@ -6,6 +6,8 @@ import { StatusCodes } from "http-status-codes";
 import {generateHashedValue, checkValidity, AuthResponseData, getBasicUserDetails} from '../utils/auth'
 import ApiError from "../middlewares/errorHandler/api-error";
 import { createAccessToken } from "../utils/auth";
+import { generateRandomToken } from "../utils/auth";
+import { resetTokenExpiresIn } from "../config/config";
 
 
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -42,6 +44,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
         logger.info(`END: Register User Service`)
 
     }catch(error){
+        logger.error(`Error in registering user`)
         next(error)
     }
     
@@ -75,25 +78,88 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         logger.info(`END: Login User Service`)
 
     }catch(error){
+        logger.error(`Error in signing-in user`)
         next(error)
     }
 }
 
-export const forgotPassword = async (req: Request, res: Response) => {
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+    // feature for the user to be able to forget password
+
+    try{
+        logger.info(`START: Forget Password Service`)
+        const {email} = req.body
+
+        // generate random token
+        const resetToken = generateRandomToken()
+
+        const user = await User.findOneAndUpdate({email}, {
+            passwordResetToken: resetToken,
+            passwordResetExpires: new Date(Date.now() + resetTokenExpiresIn * 10000).toISOString()
+        })
+
+        if (!user){
+            return next(ApiError.badRequest('This user does not exist in the database'))
+        }
+
+        // set up email functionality to receive token
+
+    }catch(error){
+        logger.error(`Something went wrong.`)
+        next(error)
+    }
 
 }
 
 export const resetPassword = async (req: Request, res: Response) => {
+    // utility to reset password
 
 }
 
-export const changePassword = async (req: Request, res: Response) => {
-    // needs to be logged in -> jwt authenticated to be able to send this request
+export const changePassword = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        logger.info(`START: change password service`)
+        const {user_id, password} = req.body
+
+        if (!user_id){
+            return next(ApiError.badRequest('Invalid user id'))
+        }
+
+        const user: any = await User.findByIdAndUpdate({_id: user_id}, {
+            password: generateHashedValue(password)
+        }, {new: true})
+
+        successResponse<AuthResponseData>(
+            res, 
+            StatusCodes.ACCEPTED,
+            'Password changed successfully', 
+            {user: getBasicUserDetails(user), jwt: createAccessToken(user._id)})
+
+        logger.info(`END: change password service`)
+        
+    }catch(error){
+        logger.error(`Error in changing password`)
+        next(error)
+    }
 
 }
 
-export const deactivateAccount = async (req: Request, res: Response) => {
-    // need to be logged in -> so jwt authenticated to be able to send this request
+export const deleteAccount = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        logger.info(`START: Deleting Account Service`)
+        const user_id = String(req.body.user_id)
+
+        if (!user_id){
+            return next(ApiError.badRequest('Invalid user id'))
+        }
+
+        const deletedUser = await User.findByIdAndDelete({_id: user_id})
+        logger.info(`END: Deleting Account Service`)
+        return successResponse(res, StatusCodes.OK, 'Successfully deleted a user', deletedUser)
+
+    }catch(error){
+        next(error)
+    }
 
 
 }

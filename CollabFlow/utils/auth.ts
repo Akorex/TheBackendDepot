@@ -93,3 +93,7 @@ export const createAccessToken = (id: any) => {
 export const isTokenValid = (token: string) => {
     return verify(token, jwt_secret)
 }
+
+export const generateRandomToken = () => {
+    
+}
