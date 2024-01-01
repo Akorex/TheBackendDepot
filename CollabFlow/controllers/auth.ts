@@ -19,7 +19,8 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
             firstName, 
             lastName,
             companyName,
-            dateOfBirth} = req.body
+            dateOfBirth, 
+            } = req.body
 
         const existingUser = await User.findOne({email})
         if (existingUser){
@@ -32,7 +33,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
             email,
             password: generateHashedValue(password),
             ...(companyName ? { companyName } : {}),
-            ...(dateOfBirth ? {dateOfBirth}: {})
+            ...(dateOfBirth ? {dateOfBirth}: {}),
         })
 
         successResponse<AuthResponseData>(res, 
@@ -91,7 +92,7 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
         const {email} = req.body
 
         // generate random token
-        const resetToken = generateRandomToken()
+        const resetToken = generateRandomToken() //undone
 
         const user = await User.findOneAndUpdate({email}, {
             passwordResetToken: resetToken,
@@ -111,8 +112,37 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
 
 }
 
-export const resetPassword = async (req: Request, res: Response) => {
+export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
     // utility to reset password
+    try{
+        logger.info(`START: Reset Password Service`)
+
+        const {password, passwordResetToken} = req.body
+
+        const user = await User.findOneAndUpdate({
+            passwordResetToken: passwordResetToken,
+            passwordResetExpires: {$gte : new Date().toISOString()}
+        }, 
+        
+        {
+            password: generateHashedValue(password),
+            passwordChangedAt: new Date(),
+            passwordResetToken: null, 
+            passwordResetExpires: null,
+        }).lean()
+
+        if (!user){
+            return next(ApiError.badRequest(`Invalid/Expired Password token`))
+        }
+
+        successResponse(res, StatusCodes.OK, 'Password reset successfully', user)
+        logger.info(`END: Reset Password Service`)
+    }catch(error){
+        logger.error(`An issue occured with resetting password`)
+        next(error)
+    }
+
+
 
 }
 

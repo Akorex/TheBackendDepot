@@ -3,7 +3,8 @@ import {email,
     password, 
     passwordConfirm,
     firstName,
-    lastName} from "./globalSchemas"
+    lastName, 
+    passwordResetToken} from "./globalSchemas"
 
 
 export const signupValidator = Joi.object({
@@ -19,3 +20,7 @@ export const loginValidator = Joi.object({
     password
 })
 
+export const resetPasswordValidator = Joi.object({
+    password,
+    passwordResetToken
+})

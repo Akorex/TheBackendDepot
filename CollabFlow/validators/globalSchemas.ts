@@ -10,6 +10,10 @@ export const password = Joi.string().required().min(6).messages({
     "any.required": "Password is required."
 })
 
+export const passwordResetToken = Joi.string().required().messages({
+    "any.required": "Reset Token is needed for this"
+})
+
 export const firstName = Joi.string().required().min(3).max(20).messages({
     "string.max": "Name must contain at most 20 characters.",
     "string.min": "Name must contain at least 3 characters.",
