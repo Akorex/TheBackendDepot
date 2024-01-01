@@ -1,10 +1,12 @@
 import User from "../models/auth";
 import { Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
+import { successResponse } from "../utils/responses";
 import logger from "../utils/logger";
 import { StatusCodes } from "http-status-codes";
-import {generateHashedValue, checkValidity} from '../utils/auth'
+import {generateHashedValue, checkValidity, AuthResponseData, getBasicUserDetails} from '../utils/auth'
 import ApiError from "../middlewares/errorHandler/api-error";
+import { createAccessToken } from "../utils/auth";
+
 
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -31,9 +33,15 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
             ...(dateOfBirth ? {dateOfBirth}: {})
         })
 
-        res.status(StatusCodes.CREATED).json({user: 
-            {firstName: newUser.firstName, lastName: newUser.lastName, email: newUser.email}
-        })
+        successResponse<AuthResponseData>(res, 
+            StatusCodes.CREATED, 
+            'Succesfully created user account',
+            { user: getBasicUserDetails(newUser), jwt: createAccessToken(newUser._id)}
+            )
+
+        //res.status(StatusCodes.CREATED).json({user: 
+          //  {firstName: newUser.firstName, lastName: newUser.lastName, email: newUser.email}
+        //})
 
         logger.info(`END: Register User Service`)
 
@@ -80,10 +88,13 @@ export const resetPassword = async (req: Request, res: Response) => {
 }
 
 export const changePassword = async (req: Request, res: Response) => {
+    // needs to be logged in -> jwt authenticated to be able to send this request
 
 }
 
 export const deactivateAccount = async (req: Request, res: Response) => {
+    // need to be logged in -> so jwt authenticated to be able to send this request
+
 
 }
 

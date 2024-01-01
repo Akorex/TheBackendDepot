@@ -1,4 +1,5 @@
 import {Response} from "express";
+import { AuthResponseData } from "./auth";
 
 export const errorResponse = (
     res: Response,
@@ -7,11 +8,11 @@ export const errorResponse = (
         res.status(statusCode).send({status: 'error', error})
     }
 
-export const successResponse = <T>(
+export const successResponse = <AuthResponseData>(
     res: Response,
     statusCode: number,
     message: string, 
-    data: T
+    data: AuthResponseData
 ): void => {
     res.status(statusCode).send({
         status: 'success', 

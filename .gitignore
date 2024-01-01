@@ -1,4 +1,5 @@
 .env
+.venv
 .credentials.*
 CollabFlow/node_modules
 CollabFlow/log

@@ -1,5 +1,22 @@
 import mongoose from "mongoose";
-import { getTypeAndDefaultValue } from "../utils/auth";
+import { TimeStamps, getTypeAndDefaultValue } from "../utils/auth";
+import {Document, Model} from "mongoose"
+
+
+export interface IUser extends Document, TimeStamps{
+    firstName: string,
+    lastName: string,
+    email: string,
+    about: string , 
+    password: string,
+    companyName: string | null,
+    dateofBirth: Date | null,
+    passwordResetToken: string | null;
+    passwordResetExpires: Date | null | string;
+    passwordChangedAt: Date | null;
+}
+
+
 
 const UserSchema = new mongoose.Schema({
     firstName: {
@@ -56,6 +73,8 @@ const UserSchema = new mongoose.Schema({
 
 )
 
-const User = mongoose.model('User', UserSchema)
+const User: Model<IUser>= mongoose.model('User', UserSchema)
+
+//const User = mongoose.model('User', UserSchema)
 
 export default User
