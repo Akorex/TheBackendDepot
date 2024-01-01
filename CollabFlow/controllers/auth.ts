@@ -39,10 +39,6 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
             { user: getBasicUserDetails(newUser), jwt: createAccessToken(newUser._id)}
             )
 
-        //res.status(StatusCodes.CREATED).json({user: 
-          //  {firstName: newUser.firstName, lastName: newUser.lastName, email: newUser.email}
-        //})
-
         logger.info(`END: Register User Service`)
 
     }catch(error){
@@ -71,8 +67,12 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
             return next(ApiError.badRequest("The email/password provided is not correct."))
         }
 
+        successResponse<AuthResponseData>(res, 
+            StatusCodes.OK, 
+            "Successfully signed-in into account",
+            {user: getBasicUserDetails(user), jwt: createAccessToken(user._id)})
+
         logger.info(`END: Login User Service`)
-        res.status(StatusCodes.OK).json({user: {name: `${user.firstName} ${user.lastName}`}})
 
     }catch(error){
         next(error)

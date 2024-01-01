@@ -4,16 +4,16 @@ import {Document, Model} from "mongoose"
 
 
 export interface IUser extends Document, TimeStamps{
-    firstName: string,
-    lastName: string,
-    email: string,
-    about: string , 
-    password: string,
-    companyName: string | null,
-    dateofBirth: Date | null,
-    passwordResetToken: string | null;
-    passwordResetExpires: Date | null | string;
-    passwordChangedAt: Date | null;
+    firstName: string
+    lastName: string
+    email: string
+    about: string 
+    password: string
+    companyName: string | null
+    dateOfBirth: Date | null
+    passwordResetToken: string | null
+    passwordResetExpires: Date | null | string
+    passwordChangedAt: Date | null
 }
 
 
@@ -73,7 +73,7 @@ const UserSchema = new mongoose.Schema({
 
 )
 
-const User: Model<IUser>= mongoose.model('User', UserSchema)
+const User: Model<IUser>= mongoose.model<IUser>('User', UserSchema)
 
 //const User = mongoose.model('User', UserSchema)
 
