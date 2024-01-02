@@ -96,14 +96,30 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
 
         const user = await User.findOneAndUpdate({email}, {
             passwordResetToken: resetToken,
-            passwordResetExpires: new Date(Date.now() + resetTokenExpiresIn * 10000).toISOString()
+            passwordResetExpires: new Date(Date.now() + resetTokenExpiresIn * 10000).toISOString() // 10 mins
         })
 
         if (!user){
             return next(ApiError.badRequest('This user does not exist in the database'))
         }
 
-        // set up email functionality to receive token
+        /*publishEmail(
+            req.body.email,
+            "Reset your password",
+            `Need a new password? No worries. Click the button below to reset and choose a new one.<br>
+            <b>P.S:</b> The button below expires in ${resetTokenExpiresIn} minutes`,
+            `${frontendBaseUrl}/reset-password?token=${resetToken}`,
+            "Reset Password"
+          );*/
+
+
+        logger.info(`END: Forget Password Service`)
+        successResponse<null>(
+            res,
+            StatusCodes.OK,
+            `An email has been sent to ${req.body.email}. Follow the instructions to reset your password.`,
+            null
+        )
 
     }catch(error){
         logger.error(`Something went wrong.`)

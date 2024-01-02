@@ -2,6 +2,7 @@ import {hashSync, genSaltSync, compareSync} from 'bcryptjs'
 import {IUser} from "../models/auth"
 import {JwtPayload, sign, verify} from "jsonwebtoken"
 import {jwt_secret, jwt_lifetime} from "../config/config"
+import crypto from "crypto"
 
 interface ISchemaDefault{
     type:
@@ -95,5 +96,7 @@ export const isTokenValid = (token: string) => {
 }
 
 export const generateRandomToken = () => {
-    
+    const randomBytes = crypto.randomBytes(32)
+
+    return randomBytes.toString('hex')
 }
