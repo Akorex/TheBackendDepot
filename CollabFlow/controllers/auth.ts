@@ -129,7 +129,6 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
 }
 
 export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
-    // utility to reset password
     try{
         logger.info(`START: Reset Password Service`)
 
