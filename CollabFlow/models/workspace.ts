@@ -1,5 +1,16 @@
 import mongoose from "mongoose"
-import { getTypeAndDefaultValue } from "../utils/auth"
+import {Model, Document} from "mongoose"
+import { TimeStamps, getTypeAndDefaultValue } from "../utils/auth"
+
+export interface IWorkspace extends Document, TimeStamps{
+    name: string
+    description: string | null
+    visibility: string | null
+    members: Object
+    createdBy: Object
+    status: string
+}
+
 
 
 const WorkspaceSchema = new mongoose.Schema({
@@ -37,6 +48,6 @@ const WorkspaceSchema = new mongoose.Schema({
 }, {timestamps: true})
 
 
-const Workspace = mongoose.model("Workspace", WorkspaceSchema)
+const Workspace: Model <IWorkspace>= mongoose.model<IWorkspace>("Workspace", WorkspaceSchema)
 
 export default Workspace
