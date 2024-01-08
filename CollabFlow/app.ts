@@ -6,6 +6,7 @@ import router from './routes'
 import errorHandler from './middlewares/errorHandler'
 import notFound from './middlewares/notFound'
 
+
 // setup
 const app: Application = express()
 const port = config.port
