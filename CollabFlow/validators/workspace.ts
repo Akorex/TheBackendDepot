@@ -9,7 +9,8 @@ import {
 const createWorkspaceValidator = Joi.object({
     name: workspaceName,
     status: workspaceStatus,
-    visibility: workspaceVisibilty
+    visibility: workspaceVisibilty,
+    //members: mongoIdArray()
  })
 
 export default createWorkspaceValidator
