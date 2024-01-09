@@ -14,8 +14,10 @@ export const createWorkspace = async (req: Request, res: Response, next: NextFun
         // validate members
         const memberIds = await User.find({email: {$in: memberEmails}}).distinct('_id')
 
-        // logged-in user is automatically a member
-        memberIds.push(createdBy)
+        if (!memberIds.includes(createdBy)){
+            memberIds.push(createdBy)
+        } //doesnt work as intended yet
+
 
         // create the workspace
         const workspace = await Workspace.create({
@@ -95,7 +97,7 @@ export const getAllWorkspaces = async (req: Request, res: Response, next: NextFu
                 StatusCodes.OK,
                 `Successfully fetched workspaces`,
                 workspaces
-            )
+            ) // to do
         }
 
         logger.info(`END: Get all workspace service`)

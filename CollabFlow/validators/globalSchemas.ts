@@ -35,3 +35,16 @@ export const passwordConfirm = Joi.string().required().valid(Joi.ref('password')
     "any.only": "Password must match."
 
 })
+
+export const workspaceName = Joi.string().required().max(20).messages({
+    "string.max": "Workspace name must contain at most 20 characters",
+    "any.required": "Workspace name is required"
+})
+
+export const workspaceVisibilty = Joi.string().valid('public', 'private', 'read-only').messages({
+    "string.valid": "You have entered a wrong visibility status"
+})
+
+export const workspaceStatus = Joi.string().valid('new', 'active', 'closed').messages({
+    "string.valid": "You have entered a wrong workspace status"
+})
