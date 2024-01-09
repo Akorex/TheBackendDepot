@@ -4,7 +4,7 @@ import Workspace from "../models/workspace"
 import User from "../models/auth"
 
 
-export const createTasks = (req: Request, res: Response, next: NextFunction) => {
+export const createTask= (req: Request, res: Response, next: NextFunction) => {
 
 }
 

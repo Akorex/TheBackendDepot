@@ -42,9 +42,18 @@ export const workspaceName = Joi.string().required().max(20).messages({
 })
 
 export const workspaceVisibilty = Joi.string().valid('public', 'private', 'read-only').messages({
-    "string.valid": "You have entered a wrong visibility status"
+    "string.valid": "You have entered a wrong Workspace visibility status"
 })
 
 export const workspaceStatus = Joi.string().valid('new', 'active', 'closed').messages({
-    "string.valid": "You have entered a wrong workspace status"
+    "string.valid": "You have entered a wrong Workspace status"
+})
+
+export const taskName = Joi.string().required().max(20).messages({
+    "any.required": "Task name is required",
+    "string.max": "Task name must contain at most 20 characters"
+})
+
+export const taskStatus = Joi.string().valid('To do', 'Doing', 'Done').messages({
+    "string.valid": "You have entered a wrong Task status"
 })
