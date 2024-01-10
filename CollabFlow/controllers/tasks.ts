@@ -9,8 +9,21 @@ import { StatusCodes } from "http-status-codes"
 
 const confirmAccess = async (workspaceName: any, userId: any) => {
     // utility function to check if the workspace exists and users have access
-        const workspace = await Workspace.findOne({name: workspaceName, members: userId})
-        return !!workspace 
+
+    // commented out because it doesn't work for my purpose
+    //const workspace = await Workspace.findOne({name: workspaceName, members: { $in: [userId]}})
+    //return !!workspace 
+
+    const workspace = await Workspace.find({name: workspaceName})
+
+    if (workspace){
+        const checkWorkspace = await Workspace.find({members: {$in: [userId]}})
+
+        return !! checkWorkspace
+    }else{
+        return false
+    }
+
 }
 
 export const createTask= async (req: Request, res: Response, next: NextFunction) => {
