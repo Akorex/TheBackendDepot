@@ -8,6 +8,7 @@ import { getBasicWorkspaceDetails } from "../utils/workspace";
 
 export const createWorkspace = async (req: Request, res: Response, next: NextFunction) => {
     try{
+        logger.info(`START: Create Workspace Service`)
         const {name, status, visibility, memberEmails} = req.body
         let createdBy = req.user?.userId
 
@@ -30,10 +31,12 @@ export const createWorkspace = async (req: Request, res: Response, next: NextFun
 
         successResponse(
             res,
-            StatusCodes.OK,
+            StatusCodes.CREATED,
             "Successfully created workspace",
             getBasicWorkspaceDetails(workspace)
         )
+
+        logger.info(`END: Create Workspace Service`)
 
 
     }catch(error){

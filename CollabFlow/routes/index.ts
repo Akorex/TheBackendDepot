@@ -8,6 +8,6 @@ const router = Router()
 
 router.use('/auth', authRouter)
 router.use('/workspace', isLoggedIn, workspaceRouter)
-router.use('/task', isLoggedIn, taskRouter)
+router.use('/tasks', isLoggedIn, taskRouter)
 
 export default router
