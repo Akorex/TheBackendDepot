@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
-import { getTypeAndDefaultValue } from "../utils/auth";
+import { Model, Document } from "mongoose";
+import { TimeStamps, getTypeAndDefaultValue } from "../utils/auth";
+
+export interface ITask extends Document, TimeStamps{
+    name: string
+    description: string
+    workspaceId: Object
+    assignerId: Object
+    assigneeId: Object
+    status: string
+}
 
 
 const TaskSchema = new mongoose.Schema({
@@ -34,6 +44,6 @@ const TaskSchema = new mongoose.Schema({
 
 }, {timestamps: true})
 
-const Tasks = mongoose.model("Tasks", TaskSchema)
+const Tasks: Model <ITask> = mongoose.model<ITask>("Tasks", TaskSchema)
 
 export default Tasks
