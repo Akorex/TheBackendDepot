@@ -147,14 +147,14 @@ export const deleteTask = async (req: Request, res: Response, next: NextFunction
                 StatusCodes.NOT_FOUND,
                 `The Task was not found`
             )
+        }else{
+            successResponse<null>(
+                res,
+                StatusCodes.OK,
+                `Task deleted successfully`,
+                null
+            )
         }
-
-        successResponse<null>(
-            res,
-            StatusCodes.OK,
-            `Task deleted successfully`,
-            null
-        )
 
         logger.info(`END: Delete Task Service`)
 

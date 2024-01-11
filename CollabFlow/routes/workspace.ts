@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { 
     createWorkspace,
+    deleteWorkspace,
     getAllWorkspaces,
     getWorkspace, } from "../controllers/workspace"
 
@@ -11,6 +12,6 @@ const workspaceRouter  = Router()
 
 workspaceRouter.route('/').post(joiMiddleware(createWorkspaceValidator), createWorkspace).get(getAllWorkspaces)
 
-workspaceRouter.route('/:id').get(getWorkspace)
+workspaceRouter.route('/:id').get(getWorkspace).delete(deleteWorkspace)
 
 export default workspaceRouter

@@ -123,14 +123,17 @@ export const deleteWorkspace = async (req: Request, res: Response, next: NextFun
                 StatusCodes.NOT_FOUND,
                 `The workspace was not found`
             )
+        }else{
+             successResponse<null>(
+                res,
+                StatusCodes.OK,
+                `Workspace deleted successfully`,
+                null
+            )
+
         }
 
-        successResponse<null>(
-            res,
-            StatusCodes.OK,
-            `Workspace deleted successfully`,
-            null
-        )
+        logger.info(`END: Delete Workspace Service`)
     }catch(error){
         logger.error(`An error occured in deleting workspace`)
     }

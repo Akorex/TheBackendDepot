@@ -11,6 +11,6 @@ import {
 const taskRouter = Router()
 
 taskRouter.route('/').post(createTask).get(getAllTasks)
-taskRouter.route('/:id').get(getTask)
+taskRouter.route('/:id').get(getTask).delete(deleteTask)
 
 export default taskRouter
