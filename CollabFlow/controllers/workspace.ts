@@ -95,12 +95,7 @@ export const getAllWorkspaces = async (req: Request, res: Response, next: NextFu
                 formattedWorkspaces
             )
         }else{
-            successResponse(
-                res,
-                StatusCodes.OK,
-                `Successfully fetched workspaces`,
-                workspaces
-            ) // to do
+            errorResponse(res, StatusCodes.NOT_FOUND, `Could not find workspace`)
         }
 
         logger.info(`END: Get all workspace service`)

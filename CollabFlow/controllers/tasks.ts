@@ -102,8 +102,26 @@ export const getAllTasks = async (req: Request, res: Response, next: NextFunctio
         const tasks = await Tasks.find({assigneeId: userId}).sort('createdAt')
 
         if (tasks && tasks.length > 0){
-            //format the tasks
-        }
+            const formattedTasks = tasks.map((tasks) => ({
+                name: tasks.name,
+                status: tasks.status
+            }))
+
+            
+        successResponse(
+            res,
+            StatusCodes.OK,
+            `Successfully fetched task`,
+            formattedTasks
+        )
+    }else{
+        errorResponse(
+            res,
+            StatusCodes.NOT_FOUND,
+            `Could not find Tasks`
+        )
+    }
+
 
     }catch(error){
         logger.error(`An error occured in fetching tasks ${error}`)
