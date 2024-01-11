@@ -10,13 +10,13 @@ export const createWorkspace = async (req: Request, res: Response, next: NextFun
     try{
         logger.info(`START: Create Workspace Service`)
         const {name, status, visibility, memberEmails} = req.body
-        let createdBy = req.user?.userId
+        let userId = req.user?.userId // signedin user created the workspace
 
         // validate members
         const memberIds = await User.find({email: {$in: memberEmails}}).distinct('_id')
 
-        if (!memberIds.includes(createdBy)){
-            memberIds.push(createdBy)
+        if (!memberIds.includes(userId)){
+            memberIds.push(userId)
         } //doesnt work as intended yet
 
 
@@ -25,7 +25,7 @@ export const createWorkspace = async (req: Request, res: Response, next: NextFun
             name, 
             status,
             visibility,
-            createdBy, 
+            userId, 
             members: memberIds
         })
 
@@ -40,7 +40,7 @@ export const createWorkspace = async (req: Request, res: Response, next: NextFun
 
 
     }catch(error){
-        logger.error(`Something went wrong. ${error}`)
+        logger.error(`An error occured. Workspace not created ${error}`)
         next(error)
     }
 
@@ -52,9 +52,9 @@ export const getWorkspace = async (req: Request, res: Response, next: NextFuncti
     try{
         logger.info(`START: Get Workspace Service`)
         const workspaceId = req.params.id
-        const user = req.user?.userId
+        const userId = req.user?.userId
 
-        const workspace = await Workspace.findOne({createdBy: user, _id: workspaceId})
+        const workspace = await Workspace.findOne({createdBy: userId, _id: workspaceId})
 
         if (workspace){
             successResponse(
@@ -69,7 +69,7 @@ export const getWorkspace = async (req: Request, res: Response, next: NextFuncti
         logger.info(`END: Get Workspace Service`)
         
     }catch(error){
-        logger.error(`Something went wrong ${error}`)
+        logger.error(`An error occured. Could not fetch workspace ${error}`)
         next(error)
     }
 
@@ -78,9 +78,9 @@ export const getWorkspace = async (req: Request, res: Response, next: NextFuncti
 export const getAllWorkspaces = async (req: Request, res: Response, next: NextFunction) => {
     try{
         logger.info(`START: Get all Workspace Service`)
-        const user = req.user?.userId
+        const userId = req.user?.userId
 
-        const workspaces = await Workspace.find({createdBy: user}).sort('createdAt')
+        const workspaces = await Workspace.find({createdBy: userId}).sort('createdAt')
 
         if (workspaces && workspaces.length > 0){
             const formattedWorkspaces = workspaces.map((workspaces) => ({
@@ -101,7 +101,7 @@ export const getAllWorkspaces = async (req: Request, res: Response, next: NextFu
         logger.info(`END: Get all workspace service`)
 
     }catch(error){
-        logger.error(`Something went wrong ${error}`)
+        logger.error(`An error occured, could not fetch workspace. ${error}`)
         next(error)
     }
 
@@ -110,6 +110,30 @@ export const getAllWorkspaces = async (req: Request, res: Response, next: NextFu
 }
 
 export const deleteWorkspace = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        logger.info(`START: Delete Workspace Service`)
+        let userId = req.user?.userId
+        const workspaceId = req.params.id
+
+        const workspace = await Workspace.findByIdAndDelete({_id: workspaceId, createdBy: userId})
+
+        if (!workspace){
+            errorResponse(
+                res,
+                StatusCodes.NOT_FOUND,
+                `The workspace was not found`
+            )
+        }
+
+        successResponse<null>(
+            res,
+            StatusCodes.OK,
+            `Workspace deleted successfully`,
+            null
+        )
+    }catch(error){
+        logger.error(`An error occured in deleting workspace`)
+    }
 
 }
 

@@ -24,6 +24,7 @@ export const createTask= async (req: Request, res: Response, next: NextFunction)
     try{
         logger.info(`START: Create Task Service`)
         const {name, workspaceName, status, assigneeId} = req.body
+        // code doesn't work as intended yet, can receive incorrect assigneeIds
 
         // assigner is the logged-in user, can assign to himself or others in the same workspace
         let assignerId = req.user?.userId 
@@ -134,6 +135,36 @@ export const getAllTasks = async (req: Request, res: Response, next: NextFunctio
 }
 
 
+export const deleteTask = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        logger.info(`START: Delete Task Service`)
+
+        const task = await Tasks.findByIdAndDelete({_id: req.params.id})
+
+        if (!task){
+            errorResponse(
+                res,
+                StatusCodes.NOT_FOUND,
+                `The Task was not found`
+            )
+        }
+
+        successResponse<null>(
+            res,
+            StatusCodes.OK,
+            `Task deleted successfully`,
+            null
+        )
+
+        logger.info(`END: Delete Task Service`)
+
+    }catch(error){
+        logger.error(`An error occured in deleting task ${error}`)
+        next(error)
+    }
+}
+
+
 
 
 
@@ -141,9 +172,7 @@ export const assignTask = (req: Request, res: Response, next: NextFunction) => {
 
 }
 
-export const deleteTask = (req: Request, res: Response, next: NextFunction) => {
 
-}
 
 export const updateTaskStatus = (req: Request, res: Response, next: NextFunction) => {
 
