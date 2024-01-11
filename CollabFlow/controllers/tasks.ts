@@ -96,6 +96,7 @@ export const getAllTasks = async (req: Request, res: Response, next: NextFunctio
     try{
         // returns all the tasks set by the user
         // tasks belong to a user if they are assigned to it
+        // code doesn't work as intended because issue with assigneeId
         logger.info(`START: Get All Tasks Service`)
         let userId = req.user?.userId
 
@@ -120,6 +121,8 @@ export const getAllTasks = async (req: Request, res: Response, next: NextFunctio
             StatusCodes.NOT_FOUND,
             `Could not find Tasks`
         )
+
+        logger.info(`END: Get All Tasks Service`)
     }
 
 
