@@ -135,11 +135,43 @@ export const deleteWorkspace = async (req: Request, res: Response, next: NextFun
 
         logger.info(`END: Delete Workspace Service`)
     }catch(error){
-        logger.error(`An error occured in deleting workspace`)
+        logger.error(`An error occured in deleting workspace ${error}`)
+        next(error)
     }
 
 }
 
 export const updateWorkspace = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        // utilty to update workspace status or visibility
+        logger.info(`START: Update Workspace Service`)
+        const {visibility, status} = req.body
+        const workspaceId = req.params.id
+
+        const workspace = await Workspace.findByIdAndUpdate({_id: workspaceId}, {visibility: visibility, status: status},
+            {new: true, runValidators: true})
+
+        if (workspace){
+            successResponse(
+                res,
+                StatusCodes.OK,
+                `Workspace has been successfully updated`,
+                getBasicWorkspaceDetails(workspace)
+            )
+
+        }else{
+            errorResponse(
+                res,
+                StatusCodes.NOT_FOUND,
+                `Workspace does not exist`
+            )
+        }
+
+        logger.info(`END: Update Workspace Service`)
+
+    }catch(error){
+        logger.error(`An error occured in updating workspace ${error}`)
+        next(error)
+    }
     
 }
