@@ -25,7 +25,7 @@ export const createWorkspace = async (req: Request, res: Response, next: NextFun
             name, 
             status,
             visibility,
-            userId, 
+            createdBy: userId, 
             members: memberIds
         })
 

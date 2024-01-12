@@ -174,7 +174,37 @@ export const assignTask = (req: Request, res: Response, next: NextFunction) => {
 
 
 
-export const updateTaskStatus = (req: Request, res: Response, next: NextFunction) => {
+export const updateTaskStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        logger.info(`START: Update Task Status Service`)
+        const {status} = req.body
+        const taskId = req.params.id
+
+        const task = await Tasks.findByIdAndUpdate({_id: taskId}, {status: status}, 
+            {new: true, runValidators: true})
+
+        if (task){
+            successResponse(
+                res,
+                StatusCodes.OK,
+                `Successfully updated task status`,
+                getBasicTaskDetails(task)
+            )
+        }else{
+            errorResponse(
+                res,
+                StatusCodes.NOT_FOUND,
+                `Task does not exist`
+            )
+
+        }
+
+        logger.info(`END: Update Task Status Service`)
+
+    }catch(error){
+        logger.error(`An error occured in updating task status {error}`)
+        next(error)
+    }
 
 }
 
