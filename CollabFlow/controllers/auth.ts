@@ -35,7 +35,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
             password: generateHashedValue(password),
             ...(companyName ? { companyName } : {}),
             ...(dateOfBirth ? {dateOfBirth}: {}),
-            ...(about ? {about}: {})
+            ...(about ? {about}: {}) // not clear about this, got idea from chatgpt
         })
 
         successResponse<AuthResponseData>(res, 

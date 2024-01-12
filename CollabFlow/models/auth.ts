@@ -49,10 +49,7 @@ const UserSchema = new mongoose.Schema({
         minlength: [6, 'Your password should be longer than 6 characters.']
     },
 
-    about: {
-        type: String,
-        required: false,
-    },
+    about: getTypeAndDefaultValue(String, null),
 
     companyName: {
         type: String,
