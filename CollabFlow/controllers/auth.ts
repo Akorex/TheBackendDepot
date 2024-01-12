@@ -20,6 +20,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
             lastName,
             companyName,
             dateOfBirth, 
+            about,
             } = req.body
 
         const existingUser = await User.findOne({email})
@@ -34,6 +35,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
             password: generateHashedValue(password),
             ...(companyName ? { companyName } : {}),
             ...(dateOfBirth ? {dateOfBirth}: {}),
+            ...(about ? {about}: {})
         })
 
         successResponse<AuthResponseData>(res, 
