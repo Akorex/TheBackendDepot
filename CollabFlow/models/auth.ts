@@ -17,7 +17,6 @@ export interface IUser extends Document, TimeStamps{
 }
 
 
-
 const UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
