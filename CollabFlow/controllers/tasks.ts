@@ -6,29 +6,9 @@ import logger from '../utils/logger'
 import {errorResponse, successResponse} from '../utils/responses'
 import { StatusCodes } from "http-status-codes"
 import { getBasicTaskDetails } from "../utils/tasks"
+import { fetchUserId } from "../utils/tasks"
+import { confirmAccess } from "../utils/tasks"
 
-
-const confirmAccess = async (workspaceName: any, userId: any) => {
-    // utility function to check if the workspace exists and user have access
-
-    const workspace = await Workspace.findOne({
-        name: workspaceName, 
-        members: {$in: [userId]}
-    })
-
-    return !!workspace 
-
-}
-
-const fetchUserId = async (email: string) => {
-    const user = await User.findOne({email: email})
-
-    if (user){
-        return user._id
-    }
-
-    return null
-}
 
 export const createTask= async (req: Request, res: Response, next: NextFunction) => {
     try{
