@@ -1,6 +1,6 @@
 import User from "../models/auth";
 import { Request, Response, NextFunction } from "express";
-import { successResponse } from "../utils/responses";
+import { successResponse, errorResponse } from "../utils/responses";
 import logger from "../utils/logger";
 import { StatusCodes } from "http-status-codes";
 import {generateHashedValue, checkValidity, AuthResponseData, getBasicUserDetails} from '../utils/auth'
@@ -25,7 +25,11 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
 
         const existingUser = await User.findOne({email})
         if (existingUser){
-            res.status(StatusCodes.BAD_REQUEST).json({message: 'User already exists. Log in instead.'})
+            errorResponse(
+                res,
+                StatusCodes.BAD_REQUEST,
+                `User already exists. Log in instead.`
+            )
         }
 
         const newUser = await User.create({
@@ -60,7 +64,11 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         const {email, password} = req.body
 
         if (!email || !password) {
-            return next(ApiError.badRequest('Please provide your email and password.'))
+            errorResponse(
+                res,
+                StatusCodes.BAD_REQUEST,
+                `Please provide your email and password.`
+            )
         }
 
         const user = await User.findOne({email})
