@@ -9,7 +9,7 @@ import { getBasicTaskDetails } from "../utils/tasks"
 
 
 const confirmAccess = async (workspaceName: any, userId: any) => {
-    // utility function to check if the workspace exists and users have access
+    // utility function to check if the workspace exists and user have access
 
     const workspace = await Workspace.findOne({
         name: workspaceName, 
@@ -102,6 +102,7 @@ export const getAllTasks = async (req: Request, res: Response, next: NextFunctio
         let userId = req.user?.userId
 
         const tasks = await Tasks.find({assigneeId: userId}).sort('createdAt')
+        console.log(tasks)
 
         if (tasks && tasks.length > 0){
             const formattedTasks = tasks.map((tasks) => ({

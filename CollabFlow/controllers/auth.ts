@@ -25,7 +25,8 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
 
         const existingUser = await User.findOne({email})
         if (existingUser){
-            errorResponse(
+            logger.info(`END: Register User Service`)
+            return errorResponse(
                 res,
                 StatusCodes.BAD_REQUEST,
                 `User already exists. Log in instead.`
@@ -174,7 +175,8 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
 export const changePassword = async (req: Request, res: Response, next: NextFunction) => {
     try{
         logger.info(`START: change password service`)
-        const {user_id, password} = req.body
+        const {password} = req.body
+        const user_id = req.user?.userId
 
         if (!user_id){
             return next(ApiError.badRequest('Invalid user id'))
@@ -202,17 +204,37 @@ export const changePassword = async (req: Request, res: Response, next: NextFunc
 export const deleteAccount = async (req: Request, res: Response, next: NextFunction) => {
     try{
         logger.info(`START: Deleting Account Service`)
-        const user_id = String(req.body.user_id)
+        const user_id = req.user?.userId
 
         if (!user_id){
-            return next(ApiError.badRequest('Invalid user id'))
+            errorResponse(
+                res,
+                StatusCodes.BAD_REQUEST,
+                `Something went wrong`
+            )
         }
 
         const deletedUser = await User.findByIdAndDelete({_id: user_id})
+
+        if (!deletedUser){
+            logger.info(`END: Deleting Account Service`)
+            return errorResponse(
+                res,
+                StatusCodes.NOT_FOUND,
+                `The user is not found`
+            )
+        }
         logger.info(`END: Deleting Account Service`)
-        return successResponse(res, StatusCodes.OK, 'Successfully deleted a user', deletedUser)
+
+        successResponse(
+            res,
+            StatusCodes.OK,
+            `Account successfully deleted`,
+            deletedUser
+        )
 
     }catch(error){
+        logger.error(`Error occured in deleting account`)
         next(error)
     }
 
