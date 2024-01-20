@@ -13,24 +13,39 @@ const confirmAccess = async (workspaceName: any, userId: any) => {
 
     const workspace = await Workspace.findOne({
         name: workspaceName, 
-        members: { $elemMatch: {$eq: userId}}
+        members: {$in: [userId]}
     })
 
     return !!workspace 
 
 }
 
+const fetchUserId = async (email: string) => {
+    const user = await User.findOne({email: email})
+
+    if (user){
+        return user._id
+    }
+
+    return null
+}
+
 export const createTask= async (req: Request, res: Response, next: NextFunction) => {
     try{
-        logger.info(`START: Create Task Service`)
-        const {name, workspaceName, status, assigneeId} = req.body
-        // code doesn't work as intended yet, can receive incorrect assigneeIds
 
         // assigner is the logged-in user, can assign to himself or others in the same workspace
-        let assignerId = req.user?.userId 
+        // assignee is anyone existing in the same workspace.
+
+        logger.info(`START: Create Task Service`)
+        const {name, status, workspaceName, assigneeEmail} = req.body
+
+        let assignerId = req.user?.userId       
+        const assigneeId = await fetchUserId(assigneeEmail)
+    
 
         // confirm that the assigner and assignee have access to the workspace
-        const check = await confirmAccess(workspaceName, assignerId) && confirmAccess(workspaceName, assigneeId)
+        const check = await confirmAccess(workspaceName, assignerId) && await confirmAccess(workspaceName, assigneeId)
+
 
         if (check){
             const newTask = await Tasks.create({
@@ -49,7 +64,6 @@ export const createTask= async (req: Request, res: Response, next: NextFunction)
 
 
         }else{
-            // error raised if check flag is falsity
             errorResponse(res, StatusCodes.BAD_REQUEST, 'An error occured. Confirm you have access to the workspace.')
         }
 
@@ -102,7 +116,6 @@ export const getAllTasks = async (req: Request, res: Response, next: NextFunctio
         let userId = req.user?.userId
 
         const tasks = await Tasks.find({assigneeId: userId}).sort('createdAt')
-        console.log(tasks)
 
         if (tasks && tasks.length > 0){
             const formattedTasks = tasks.map((tasks) => ({
@@ -110,7 +123,7 @@ export const getAllTasks = async (req: Request, res: Response, next: NextFunctio
                 status: tasks.status
             }))
 
-            
+        logger.info(`END: Get All Tasks Service`)
         successResponse(
             res,
             StatusCodes.OK,
