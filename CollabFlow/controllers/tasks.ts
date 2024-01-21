@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from "express"
 import Tasks from "../models/tasks"
-import Workspace from "../models/workspace"
-import User from "../models/auth"
 import logger from '../utils/logger'
 import {errorResponse, successResponse} from '../utils/responses'
 import { StatusCodes } from "http-status-codes"
 import { getBasicTaskDetails } from "../utils/tasks"
 import { fetchUserId } from "../utils/tasks"
 import { confirmAccess } from "../utils/tasks"
+import Workspace from "../models/workspace"
 
 
 export const createTask= async (req: Request, res: Response, next: NextFunction) => {
@@ -21,7 +20,10 @@ export const createTask= async (req: Request, res: Response, next: NextFunction)
 
         let assignerId = req.user?.userId       
         const assigneeId = await fetchUserId(assigneeEmail)
-    
+        const workspace = await Workspace.find({name: workspaceName})
+
+        // todo: map the workspaceId
+
 
         // confirm that the assigner and assignee have access to the workspace
         const check = await confirmAccess(workspaceName, assignerId) && await confirmAccess(workspaceName, assigneeId)
@@ -32,7 +34,7 @@ export const createTask= async (req: Request, res: Response, next: NextFunction)
                 name,
                 assignerId,
                 assigneeId,
-                status
+                status,
             })
 
             successResponse(

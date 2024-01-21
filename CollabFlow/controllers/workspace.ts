@@ -175,3 +175,7 @@ export const updateWorkspace = async (req: Request, res: Response, next: NextFun
     }
     
 }
+
+export const addMember = async (req: Request, res: Response, next: NextFunction) => {
+    // functionality to add user to a workspace
+}
