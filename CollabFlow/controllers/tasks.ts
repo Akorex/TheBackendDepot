@@ -9,7 +9,7 @@ import { confirmAccess } from "../utils/tasks"
 import Workspace from "../models/workspace"
 
 
-export const createTask= async (req: Request, res: Response, next: NextFunction) => {
+export const createTask = async (req: Request, res: Response, next: NextFunction) => {
     try{
 
         // assigner is the logged-in user, can assign to himself or others in the same workspace
